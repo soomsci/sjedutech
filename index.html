@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>삼정중학교 에듀테크 모음집</title>
+<meta name="description" content="삼정중학교 수업과 학교생활에서 쓰는 에듀테크 도구 모음">
+<style>
+  :root {
+    --bg: #fff8ec;
+    --card: #ffffff;
+    --ink: #2b2b3a;
+    --muted: #7a7a8c;
+    --accent: #ff8a5b;
+    --accent-2: #4cb8a4;
+    --shadow: 0 4px 14px rgba(80, 60, 30, .10);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 40px 16px 56px; }
+  header { text-align: center; margin-bottom: 22px; }
+  .logo {
+    width: 84px; height: 84px; margin: 0 auto 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #ffc35b);
+    display: grid; place-items: center;
+    font-size: 40px; box-shadow: var(--shadow);
+  }
+  h1 { margin: 0; font-size: 1.6rem; letter-spacing: -.02em; }
+  .sub { margin: 6px 0 0; color: var(--muted); font-size: .95rem; }
+
+  /* 교과 탭 */
+  .tabs {
+    position: sticky; top: 0; z-index: 2;
+    display: flex; gap: 8px;
+    margin: 0 -16px 18px; padding: 10px 16px;
+    overflow-x: auto; scrollbar-width: none;
+    background: linear-gradient(var(--bg) 80%, rgba(255, 248, 236, 0));
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: none;
+    padding: 8px 16px;
+    border: 0; border-radius: 999px;
+    background: var(--card); color: var(--ink);
+    font: inherit; font-size: .92rem; font-weight: 600;
+    box-shadow: var(--shadow); cursor: pointer;
+  }
+  .tab[aria-selected="true"] { background: var(--accent); color: #fff; }
+  .tab:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 2px; }
+
+  .links { display: grid; gap: 10px; }
+  a.link {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    color: inherit; text-decoration: none;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  a.link:hover, a.link:focus-visible { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(80, 60, 30, .16); }
+  a.link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .ico {
+    flex: none; width: 44px; height: 44px; border-radius: 12px;
+    background: #fff0e4; display: grid; place-items: center; font-size: 22px;
+  }
+  .txt { min-width: 0; }
+  .name { display: block; font-weight: 700; }
+  .badge { margin-left: auto; flex: none; font-size: .72rem; color: var(--accent-2); background: #e6f6f2; padding: 2px 8px; border-radius: 999px; }
+  .arrow { flex: none; color: var(--muted); }
+  .empty { text-align: center; color: var(--muted); padding: 36px 0; }
+  footer { margin-top: 36px; text-align: center; color: var(--muted); font-size: .8rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo" aria-hidden="true">🏫</div>
+    <h1>삼정중학교 에듀테크 모음집</h1>
+    <p class="sub">교과별로 필요한 도구를 한곳에 모았어요</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="교과 선택" id="tabs"></nav>
+  <main id="panel" role="tabpanel" aria-live="polite"></main>
+
+  <footer>© 삼정중학교</footer>
+</div>
+
+<script>
+/* ===== 여기만 수정하세요 =====
+   SUBJECTS: 탭 순서와 이름. 필요 없는 교과는 지우고, 필요한 교과는 추가하세요.
+   LINKS: 링크 1개 = 한 줄.
+     subject: 위 SUBJECTS에 있는 교과 이름 (여러 교과면 배열 ["국어","영어"])
+     name/url/icon(이모지)
+   '전체' 탭은 모든 링크를 자동으로 보여줍니다. */
+const SUBJECTS = ["국어","수학","영어","사회","도덕","과학","기술가정","정보","음악","미술","체육","한문","공통"];
+
+const LINKS = [
+  { subject: "한문", name: "한자성어 골든벨", url: "https://claude.ai/artifact/1ZiesttKqReWwwnV7rh2wM", icon: "🔔" },
+  { subject: "음악", name: "음악 작곡프로그램", url: "https://pianohys.github.io/piano-wep/%EC%9E%91%EA%B3%A1%ED%95%98%EA%B8%B0_ver2.html", icon: "🎹" },
+  { subject: "음악", name: "화음건반퀴즈", url: "https://pianohys.github.io/piano-wep/chord_keyboard_quiz2.html", icon: "🎼" },
+  { subject: "과학", name: "빛의 거리와 세기", url: "https://soomsci.github.io/starlight/", icon: "💡" },
+  { subject: "과학", name: "판의 경계", url: "https://sj-plate.web.app/", icon: "🌋" },
+  { subject: "과학", name: "우주탐색", url: "https://soomsci.github.io/Galaxy/", icon: "🚀" },
+  { subject: "과학", name: "연주시차", url: "https://sj-parallax.web.app/", icon: "🔭" },
+  { subject: "과학", name: "AI 과학 실험실", url: "https://ai-science-data-studio.web.app/join.html", icon: "🧪" },
+];
+/* ===== 수정 끝 ===== */
+
+const ALL = "전체";
+const tabsEl = document.getElementById("tabs");
+const panel = document.getElementById("panel");
+const tabNames = [ALL, ...SUBJECTS];
+
+const subjectsOf = l => [].concat(l.subject);
+
+function render(name) {
+  const items = name === ALL ? LINKS : LINKS.filter(l => subjectsOf(l).includes(name));
+  panel.textContent = "";
+  if (!items.length) {
+    const p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = "아직 등록된 도구가 없어요. 곧 채워질 예정입니다.";
+    panel.append(p);
+    return;
+  }
+  const list = document.createElement("div");
+  list.className = "links";
+  for (const l of items) {
+    const a = document.createElement("a");
+    a.className = "link";
+    a.href = l.url; a.target = "_blank"; a.rel = "noopener";
+    const ico = Object.assign(document.createElement("span"), { className: "ico", textContent: l.icon || "🔗" });
+    ico.setAttribute("aria-hidden", "true");
+    const txt = document.createElement("span");
+    txt.className = "txt";
+    txt.append(Object.assign(document.createElement("span"), { className: "name", textContent: l.name }));
+    a.append(ico, txt);
+    if (name === ALL) {
+      a.append(Object.assign(document.createElement("span"), { className: "badge", textContent: subjectsOf(l).join("·") }));
+    }
+    const arrow = Object.assign(document.createElement("span"), { className: "arrow", textContent: "›" });
+    arrow.setAttribute("aria-hidden", "true");
+    a.append(arrow);
+    list.append(a);
+  }
+  panel.append(list);
+}
+
+function select(name, updateHash) {
+  if (!tabNames.includes(name)) name = ALL;
+  for (const b of tabsEl.children) b.setAttribute("aria-selected", String(b.dataset.name === name));
+  render(name);
+  if (updateHash) history.replaceState(null, "", "#" + encodeURIComponent(name));
+}
+
+for (const n of tabNames) {
+  const b = document.createElement("button");
+  b.className = "tab"; b.type = "button"; b.role = "tab";
+  b.dataset.name = n; b.textContent = n;
+  b.addEventListener("click", () => select(n, true));
+  tabsEl.append(b);
+}
+
+select(decodeURIComponent(location.hash.slice(1)), false);
+</script>
+</body>
+</html>
